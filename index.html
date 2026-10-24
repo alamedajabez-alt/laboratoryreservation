@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#DC2626">
+  <title>HM Lab Reserve | Hospitality Management Laboratory</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <a class="logo" href="index.html" aria-label="Davao Central College Hospitality Management — LAB RESERVE"><img class="logo-img" src="logo.png" alt="Davao Central College Hospitality Management logo" width="44" height="44"><span>LAB RESERVE</span></a>
+
+    <div class="nav-links" id="navStudent">
+      <a href="#labs">Laboratories</a>
+      <a href="#how-it-works">How It Works</a>
+      <a href="#live-board">Live Board</a>
+      <a href="#my-reservations">My Bookings</a>
+      <a href="#labs" class="btn-quick-reserve">Quick Reserve</a>
+    </div>
+
+    <div class="nav-links" id="navAdmin" hidden>
+      <a href="#dash-overview">Overview</a>
+      <a href="#dash-schedule">Schedule</a>
+      <a href="#dash-analytics">Analytics</a>
+      <a href="#dash-requests" class="btn-quick-reserve">Requests</a>
+    </div>
+
+    <!-- Role switch: Student <-> Admin -->
+    <button type="button" class="role-switch" id="roleSwitch" role="switch" aria-checked="false" aria-label="Switch role between Student and Admin">
+      <span class="role-opt" data-role="student">Student</span>
+      <span class="role-track"><span class="role-thumb"></span></span>
+      <span class="role-opt" data-role="admin">Admin</span>
+    </button>
+  </nav>
+
+  <!-- ====================== STUDENT VIEW ====================== -->
+  <div id="studentView">
+
+    <header class="hero">
+      <div class="hero-badge">Official Hospitality Facility Portal</div>
+      <h1>Reserve Your <span class="red-text">Hospitality Workstation</span></h1>
+      <p>Book the hot kitchens, the cold kitchen and the mini hotel instantly for your laboratory sessions.</p>
+      <div class="hero-stats">
+        <div class="stat-item"><span class="stat-number">4</span><span class="stat-label">Training Stations</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat-item"><span class="stat-number">3</span><span class="stat-label">Shifts Every Day</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat-item"><span class="stat-number">Real-Time</span><span class="stat-label">Conflict Prevention</span></div>
+      </div>
+    </header>
+
+    <main class="container" id="labs">
+      <div class="section-header">
+        <h2>Available Laboratories &amp; Stations</h2>
+        <p>Select your required workstation category below</p>
+      </div>
+
+      <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">All Stations</button>
+        <button class="filter-btn" data-filter="hot">Hot Kitchen</button>
+        <button class="filter-btn" data-filter="cold">Cold Kitchen</button>
+        <button class="filter-btn" data-filter="hotel">Mini Hotel</button>
+      </div>
+
+      <div class="lab-grid" id="labGrid"></div>
+
+      <section class="how-it-works" id="how-it-works">
+        <div class="section-header">
+          <h2>How Laboratory Booking Works</h2>
+          <p>Three simple steps to secure your workstation</p>
+        </div>
+        <div class="steps-grid">
+          <div class="step-card"><div class="step-number">01</div><h3>Select Station &amp; Shift</h3>
+            <p>Choose your required lab setup and pick an available morning, afternoon, or evening time slot.</p></div>
+          <div class="step-card"><div class="step-number">02</div><h3>Add Equipment &amp; Details</h3>
+            <p>Input your course code, student ID, and check out specialized tools needed for your practical exam.</p></div>
+          <div class="step-card"><div class="step-number">03</div><h3>Get Approved &amp; Digital Pass</h3>
+            <p>Receive a reference code right away. Once the lab custodian approves your request, your QR entry pass is unlocked for check-in.</p></div>
+        </div>
+      </section>
+
+      <!-- Live Booking Board: every booking appears here the moment it is made -->
+      <section class="board-section" id="live-board">
+        <div class="section-header">
+          <h2>Live Booking Board <span class="live-dot" title="Updates instantly"></span> <span class="count" id="boardCount"></span></h2>
+          <p>All upcoming reservations across every laboratory. New requests appear here instantly.</p>
+        </div>
+        <div class="reservations-table-container">
+          <table class="reservations-table">
+            <thead><tr><th>Station / Lab</th><th>Date &amp; Shift</th><th>Booked By</th><th>Course</th><th>Status</th></tr></thead>
+            <tbody id="boardBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="my-reservations-section" id="my-reservations">
+        <div class="section-header">
+          <h2>My Reservations</h2>
+          <p>Enter your ID to view your upcoming bookings and access your digital entry passes</p>
+        </div>
+        <form class="lookup-form" id="lookupForm">
+          <label for="lookupStudentId">Student / Instructor ID</label>
+          <input type="text" id="lookupStudentId" placeholder="e.g., 2024-00123" autocapitalize="characters" autocorrect="off" spellcheck="false" enterkeyhint="search" maxlength="30" pattern="[A-Za-z0-9\-]{3,30}" autocomplete="off" required>
+          <button type="submit" class="btn-lookup">Show My Bookings</button>
+        </form>
+        <div class="reservations-table-container">
+          <table class="reservations-table">
+            <thead><tr><th>Ref Code</th><th>Student Name</th><th>Station / Lab</th><th>Date &amp; Shift</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="reservationsTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ====================== ADMIN VIEW ====================== -->
+  <div id="adminView" hidden>
+    <main class="container admin-main wide">
+      <div class="form-error" id="globalMsg" role="alert" hidden></div>
+
+      <div class="dash-head" id="dash-overview">
+        <div>
+          <div class="modal-header-tag">Custodian Dashboard</div>
+          <h2>Laboratory Operations</h2>
+          <p id="dashSub"></p>
+        </div>
+        <span class="admin-who" id="adminWho"></span>
+      </div>
+
+      <div class="kpi-grid" id="kpiGrid"></div>
+
+      <div class="dash-cols">
+        <section class="panel" id="dash-schedule">
+          <div class="panel-head">
+            <h3>7-Day Schedule</h3>
+            <div class="legend">
+              <span><i class="slot s-free"></i>Free</span>
+              <span><i class="slot s-pending"></i>Pending</span>
+              <span><i class="slot s-approved"></i>Approved</span>
+            </div>
+          </div>
+          <p class="panel-note">Each cell = Morning · Afternoon · Evening. Click a booked block to find it in the requests list.</p>
+          <div class="schedule-scroll"><table class="schedule" id="scheduleGrid"></table></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><h3>Recent Activity</h3></div>
+          <ul class="activity" id="activityList"></ul>
+        </section>
+      </div>
+
+      <div class="dash-cols three" id="dash-analytics">
+        <section class="panel"><div class="panel-head"><h3>Bookings by Station</h3></div><div class="bars" id="chartLab"></div></section>
+        <section class="panel"><div class="panel-head"><h3>Shift Demand</h3></div><div class="bars" id="chartShift"></div></section>
+        <section class="panel"><div class="panel-head"><h3>Equipment Usage</h3></div><div class="bars" id="chartEquip"></div></section>
+      </div>
+
+      <section class="panel" id="dash-requests">
+        <div class="panel-head">
+          <h3>Reservation Requests</h3>
+          <input type="search" id="reqSearch" class="search-input" placeholder="Search name, ID, ref code, lab…" aria-label="Search reservations">
+        </div>
+        <div class="admin-tabs" id="adminTabs">
+          <button class="filter-btn active" data-status="pending" type="button">Pending <span class="count" id="cnt-pending"></span></button>
+          <button class="filter-btn" data-status="approved" type="button">Approved <span class="count" id="cnt-approved"></span></button>
+          <button class="filter-btn" data-status="rejected" type="button">Rejected <span class="count" id="cnt-rejected"></span></button>
+          <button class="filter-btn" data-status="cancelled" type="button">Cancelled <span class="count" id="cnt-cancelled"></span></button>
+          <button class="filter-btn" data-status="all" type="button">All</button>
+        </div>
+        <div class="reservations-table-container">
+          <table class="reservations-table">
+            <thead><tr><th>Ref Code</th><th>Student</th><th>Station / Lab</th><th>Date &amp; Shift</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="adminTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <p>&copy; 2026 Hospitality Management Department. All rights reserved.</p>
+    <div class="demo-bar">
+      <span>Presentation demo &mdash; data is saved only in this browser.</span>
+      <button type="button" id="seedBtn">Load sample bookings</button>
+      <button type="button" id="resetBtn">Reset demo</button>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <!-- Booking Modal -->
+  <div class="modal-overlay" id="bookingModal" role="dialog" aria-modal="true" aria-label="Reservation form">
+    <div class="modal">
+      <button class="close-btn" id="closeModal" aria-label="Close" type="button">&times;</button>
+      <div class="modal-header-tag">Reservation Form</div>
+      <h2>Book: <span id="selectedLabTitle" class="red-text">Station Name</span></h2>
+
+      <form id="bookingForm">
+        <input type="hidden" id="selectedLabId">
+        <div class="form-row">
+          <div class="form-group"><label for="studentName">Full Name</label>
+            <input type="text" id="studentName" placeholder="e.g., Maria Santos" required minlength="2" maxlength="100" autocomplete="name"></div>
+          <div class="form-group"><label for="studentId">Student / Instructor ID</label>
+            <input type="text" id="studentId" placeholder="e.g., 2024-00123" required autocapitalize="characters" autocorrect="off" spellcheck="false" enterkeyhint="next" maxlength="30" pattern="[A-Za-z0-9\-]{3,30}" title="Letters, numbers and dashes only (3-30 characters)" autocomplete="off"></div>
+        </div>
+        <div class="form-group"><label for="courseCode">Course / Subject Code</label>
+          <input type="text" id="courseCode" placeholder="e.g., HM-101 Culinary Arts Fundamentals" required minlength="2" maxlength="100"></div>
+        <div class="form-row">
+          <div class="form-group"><label for="resDate">Reservation Date</label>
+            <input type="date" id="resDate" required></div>
+          <div class="form-group"><label for="resTime">Time Shift</label>
+            <select id="resTime" required>
+              <option value="">Select Shift</option>
+              <option value="08:00 AM - 11:00 AM" data-start="08:00">Morning Shift (08:00 AM - 11:00 AM)</option>
+              <option value="01:00 PM - 04:00 PM" data-start="13:00">Afternoon Shift (01:00 PM - 04:00 PM)</option>
+              <option value="05:00 PM - 08:00 PM" data-start="17:00">Evening Shift (05:00 PM - 08:00 PM)</option>
+            </select></div>
+        </div>
+        <div class="form-group">
+          <label>Special Equipment / Add-on Checklist</label>
+          <div class="equipment-checkbox-group" id="equipmentChecklist"></div>
+        </div>
+        <div class="form-group custom-addon">
+          <label for="customName">Personalized Add-on Request <span class="optional">(optional)</span></label>
+          <div class="custom-row">
+            <input type="text" id="customName" placeholder="e.g., Extra aprons, induction burner" maxlength="60" autocomplete="off" enterkeyhint="done">
+            <input type="number" id="customQty" value="1" min="1" max="99" inputmode="numeric" aria-label="Quantity">
+            <button type="button" class="btn-add-custom" id="addCustomBtn">Add</button>
+          </div>
+          <ul class="chip-list" id="customList"></ul>
+          <p class="field-hint" id="customHint" aria-live="polite"></p>
+        </div>
+        <p class="field-hint" id="slotHint" aria-live="polite"></p>
+        <div class="form-error" id="formError" role="alert" hidden></div>
+        <button type="submit" class="btn-submit" id="submitBtn">Submit Reservation Request</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Digital Pass Modal -->
+  <div class="modal-overlay" id="passModal" role="dialog" aria-modal="true" aria-label="Laboratory entry pass">
+    <div class="modal pass-modal-content">
+      <button class="close-btn" id="closePassModal" aria-label="Close" type="button">&times;</button>
+      <div class="pass-badge-header" id="passBadgeHeader">OFFICIAL LABORATORY ENTRY PASS</div>
+      <div class="pass-card" id="printablePass">
+        <div class="pass-header">
+          <div><h3 id="passLabName">Culinary Station 01</h3><span id="passRefCode" class="pass-ref">HM-RES-A1B2C</span></div>
+          <div class="pass-qr-box" id="passQr"><div class="simulated-qr"></div><span>QR Pass</span></div>
+        </div>
+        <div class="pass-body">
+          <div class="pass-row"><span>Student Name:</span><strong id="passStudentName"></strong></div>
+          <div class="pass-row"><span>Student ID:</span><strong id="passStudentId"></strong></div>
+          <div class="pass-row"><span>Course Code:</span><strong id="passCourseCode"></strong></div>
+          <div class="pass-row"><span>Date &amp; Shift:</span><strong id="passDateTime"></strong></div>
+          <div class="pass-row"><span>Add-ons:</span><strong id="passAddons"></strong></div>
+          <div class="pass-row"><span>Status:</span><strong id="passStatus"></strong></div>
+        </div>
+      </div>
+      <div class="pass-actions">
+        <button class="btn-print" id="printPassBtn" type="button">Print Pass</button>
+        <button class="btn-done" id="closePassBtn" type="button">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Decline add-on Modal (custodian) -->
+  <div class="modal-overlay" id="addonModal" role="dialog" aria-modal="true" aria-label="Decline add-on">
+    <div class="modal">
+      <button class="close-btn" id="closeAddon" aria-label="Close" type="button">&times;</button>
+      <div class="modal-header-tag">Add-on not available</div>
+      <h2 id="addonTitle">Decline add-on</h2>
+      <p class="panel-note" id="addonSub"></p>
+      <div class="form-group"><label for="addonNote">Reason (shown to the student)</label>
+        <input type="text" id="addonNote" maxlength="255" placeholder="e.g., Out of stock, under repair"></div>
+      <div class="form-error" id="addonMsg" role="alert" hidden></div>
+      <button class="btn-submit" id="confirmAddon" type="button">Decline add-on</button>
+    </div>
+  </div>
+
+  <!-- Reject Modal (custodian) -->
+  <div class="modal-overlay" id="rejectModal" role="dialog" aria-modal="true" aria-label="Reject reservation">
+    <div class="modal">
+      <button class="close-btn" id="closeReject" aria-label="Close" type="button">&times;</button>
+      <div class="modal-header-tag">Reject reservation</div>
+      <h2 id="rejectTitle">Reject request</h2>
+      <div class="form-group"><label for="rejectNote">Reason (shown to the student)</label>
+        <input type="text" id="rejectNote" maxlength="255" placeholder="e.g., Lab under maintenance on that day"></div>
+      <div class="form-error" id="rejectMsg" role="alert" hidden></div>
+      <button class="btn-submit" id="confirmReject" type="button">Reject reservation</button>
+    </div>
+  </div>
+
+  <script src="mock-api.js"></script>
+  <script src="script.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>
