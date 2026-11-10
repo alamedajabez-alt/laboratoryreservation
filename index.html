@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#DC2626">
-  <title>HM Lab Reserve | Hospitality Management Laboratory</title>
+  <title>HME Laboratory Reservation | Hospitality Management Laboratory</title>
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,7 +15,7 @@
 
   <!-- Navigation Bar -->
   <nav class="navbar">
-    <a class="logo" href="index.html" aria-label="Davao Central College Hospitality Management — LAB RESERVE"><img class="logo-img" src="logo.png" alt="Davao Central College Hospitality Management logo" width="44" height="44"><span>LAB RESERVE</span></a>
+    <a class="logo" href="index.html" aria-label="Davao Central College Hospitality Management — LAB RESERVE"><img class="logo-img" src="logo.png" alt="Davao Central College Hospitality Management logo" width="44" height="44"><span>HME LAB RESERVE</span></a>
 
     <div class="nav-links" id="navStudent">
       <a href="#labs">Laboratories</a>
@@ -67,6 +67,7 @@
         <button class="filter-btn" data-filter="hot">Hot Kitchen</button>
         <button class="filter-btn" data-filter="cold">Cold Kitchen</button>
         <button class="filter-btn" data-filter="hotel">Mini Hotel</button>
+        <button class="filter-btn" data-filter="hall">Function Hall</button>
       </div>
 
       <div class="lab-grid" id="labGrid"></div>
@@ -223,9 +224,17 @@
               <option value="05:00 PM - 08:00 PM" data-start="17:00">Evening Shift (05:00 PM - 08:00 PM)</option>
             </select></div>
         </div>
-        <div class="form-group">
-          <label>Special Equipment / Add-on Checklist</label>
-          <div class="equipment-checkbox-group" id="equipmentChecklist"></div>
+        <!-- Roll-On Equipment Picker (list changes per station) -->
+        <div class="form-group" id="equipmentSectionGroup">
+          <label>Special Equipment / Add-on Checklist <span class="optional">(Roll-on Picker)</span></label>
+          <div class="equipment-picker-wrapper">
+            <div class="equipment-search-bar">
+              <input type="search" id="equipmentSearchInput" placeholder="Search equipment..." autocomplete="off">
+              <button type="button" class="btn-select-all" id="selectAllEquipBtn">Select All Visible</button>
+            </div>
+            <div class="equipment-chips-selected" id="selectedEquipmentTags" aria-live="polite"></div>
+            <div class="equipment-roll-list" id="equipmentRollList" role="region" aria-label="Equipment list"></div>
+          </div>
         </div>
         <div class="form-group custom-addon">
           <label for="customName">Personalized Add-on Request <span class="optional">(optional)</span></label>

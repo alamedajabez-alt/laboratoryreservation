@@ -1036,3 +1036,131 @@ body:has(.modal-overlay.open) { overflow: hidden; }
 .chip-declined .chip-act { color: #166534; }
 .admin-addons { margin-top: 0.5rem; }
 @media (max-width: 720px) { .chip-act { min-height: 1.9rem; padding: 0.25rem 0.7rem !important; } }
+
+/* ===== Roll-On Equipment Picker Styles ===== */
+.equipment-picker-wrapper {
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.equipment-search-bar {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.equipment-search-bar input {
+  flex: 1;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.875rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-main);
+  outline: none;
+}
+
+.equipment-search-bar input:focus {
+  border-color: var(--primary-red);
+}
+
+.btn-select-all {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0 0.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.btn-select-all:hover {
+  border-color: var(--primary-red);
+  color: var(--primary-red);
+}
+
+.equipment-chips-selected {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  min-height: 1.5rem;
+}
+
+.equipment-chips-selected:empty::before {
+  content: "No equipment selected yet.";
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-style: italic;
+  align-self: center;
+}
+
+.eq-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: var(--badge-bg);
+  color: var(--primary-red);
+  border: 1px solid #FECACA;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 20px;
+}
+
+.eq-tag button {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+}
+
+.equipment-roll-list {
+  max-height: 220px;
+  overflow-y: auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  scroll-behavior: smooth;
+}
+
+.equipment-roll-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.equipment-roll-item:hover {
+  background: #F1F5F9;
+}
+
+.equipment-roll-item input[type="checkbox"] {
+  cursor: pointer;
+  accent-color: var(--primary-red);
+}
+
+.equipment-roll-item.disabled {
+  opacity: 0.5;
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
+.equipment-roll-item[hidden] { display: none; }
+.equipment-roll-item.disabled input { cursor: not-allowed; }

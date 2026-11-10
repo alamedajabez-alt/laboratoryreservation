@@ -45,17 +45,63 @@
     btn.classList.add('active'); state.filter = btn.dataset.filter; renderLabs();
   }));
 
-  async function loadEquipment() {
-    state.equipment = (await api('get_equipment.php')).data;
-    $('equipmentChecklist').replaceChildren(...state.equipment.map((eq) =>
-      h('label', { class: 'checkbox-label' }, h('input', { type: 'checkbox', name: 'equipment', value: eq.id }), h('span', {}, eq.name))));
+  /* ---------- roll-on equipment picker (list depends on the station) ---------- */
+  const EQUIP_LABEL = { kitchen: 'kitchen', hotel: 'Mini Hotel', hall: 'Function Hall' };
+  const equipItems = () => [...document.querySelectorAll('#equipmentRollList .equipment-roll-item')];
+
+  async function loadEquipment(lab) {
+    state.equipment = [];
+    renderEquipmentRoll();
+    try {
+      const rows = (await api('get_equipment.php', { query: { lab_id: lab.id } })).data;
+      if (state.currentLab !== lab) return;            // modal was closed / another station opened meanwhile
+      state.equipment = rows;
+    } catch { if (state.currentLab !== lab) return; }
+    renderEquipmentRoll();
+    refreshEquipmentOptions();
   }
+
+  function renderEquipmentRoll() {
+    const container = $('equipmentRollList');
+    container.replaceChildren(...state.equipment.map((eq) => {
+      const cb = h('input', { type: 'checkbox', name: 'equipment', value: String(eq.id) });
+      cb.addEventListener('change', renderSelectedEquipmentTags);
+      const label = h('label', { class: 'equipment-roll-item', 'data-name': eq.name.toLowerCase() }, cb, h('span', {}, eq.name));
+      return label;
+    }));
+    filterEquipment();
+    renderSelectedEquipmentTags();
+  }
+
+  function filterEquipment() {
+    const q = $('equipmentSearchInput').value.trim().toLowerCase();
+    equipItems().forEach((l) => { l.hidden = !!q && !l.dataset.name.includes(q); });   // property, not attribute: hidden="false" would still hide
+  }
+
+  function renderSelectedEquipmentTags() {
+    const checked = [...document.querySelectorAll('#equipmentRollList input:checked')];
+    $('selectedEquipmentTags').replaceChildren(...checked.map((cb) => {
+      const name = cb.parentElement.textContent;
+      return h('span', { class: 'eq-tag' }, name,
+        h('button', { type: 'button', 'aria-label': `Remove ${name}`, onclick: () => { cb.checked = false; renderSelectedEquipmentTags(); } }, '×'));
+    }));
+  }
+
+  $('equipmentSearchInput').addEventListener('input', filterEquipment);
+  $('selectAllEquipBtn').addEventListener('click', () => {
+    equipItems().forEach((l) => { const cb = l.querySelector('input'); if (!l.hidden && !cb.disabled) cb.checked = true; });
+    renderSelectedEquipmentTags();
+  });
 
   /* ---------- booking modal + live availability ---------- */
   function openBookingModal(lab) {
     state.currentLab = lab; state.availability = EMPTY_AVAIL;
     $('selectedLabId').value = lab.id; $('selectedLabTitle').textContent = lab.name; formError.hidden = true;
     state.customAddons = []; $('customName').value = ''; $('customQty').value = '1'; renderCustomAddons();
+    $('equipmentSearchInput').value = '';
+    $('equipmentSearchInput').placeholder = `Search ${EQUIP_LABEL[lab.equip] || ''} equipment...`.replace('  ', ' ');
+    $('equipmentRollList').setAttribute('aria-label', `${EQUIP_LABEL[lab.equip] || ''} equipment list`.trim());
+    loadEquipment(lab);
     const max = new Date(); max.setDate(max.getDate() + MAX_DAYS_AHEAD);
     dateInput.min = toISODate(new Date()); dateInput.max = toISODate(max);
     if (state.studentId) $('studentId').value = state.studentId;
@@ -99,11 +145,12 @@
 
   function refreshEquipmentOptions() {
     const busy = (state.availability.equipment_busy[shiftSelect.value] || []).map(Number);
-    document.querySelectorAll('#equipmentChecklist .checkbox-label').forEach((label) => {
+    equipItems().forEach((label) => {
       const cb = label.querySelector('input'), inUse = busy.includes(Number(cb.value));
       cb.disabled = inUse; if (inUse) cb.checked = false;
       label.classList.toggle('disabled', inUse); label.title = inUse ? 'Already reserved for this shift' : '';
     });
+    renderSelectedEquipmentTags();
   }
   dateInput.addEventListener('change', loadAvailability);
   shiftSelect.addEventListener('change', refreshEquipmentOptions);
@@ -161,7 +208,7 @@
     try {
       const result = await api('create_reservation.php', { method: 'POST', body: payload });
       state.lastRef = result.data.ref_code;
-      closeBooking(); bookingForm.reset(); state.customAddons = []; renderCustomAddons();
+      closeBooking(); bookingForm.reset(); state.customAddons = []; renderCustomAddons(); filterEquipment(); renderSelectedEquipmentTags();
       setStudentId(payload.student_id);
       showPass({ lab: state.currentLab.name, ref: result.data.ref_code, name: payload.student_name, sid: payload.student_id,
                  course: payload.course_code, when: `${payload.reservation_date} | ${payload.time_shift}`, status: 'pending', addons: result.data.addons });
@@ -254,7 +301,7 @@
   document.addEventListener('DOMContentLoaded', async () => {
     try { state.studentId = sessionStorage.getItem('hm_student_id') || ''; } catch { /* ignore */ }
     $('lookupStudentId').value = state.studentId;
-    await Promise.all([loadLabs(), loadEquipment()]);
+    await loadLabs();
     refreshAll();
   });
 })();
