@@ -12,3 +12,4 @@ Open **index.html** (double-click). No server, PHP or database needed. Bookings 
 
 Files: index.html · style.css · mock-api.js (fake backend) · script.js (student) · admin.js (custodian)
 # laboratoryreservation
+# KeyChord-AI
